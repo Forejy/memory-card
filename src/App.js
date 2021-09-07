@@ -10,9 +10,6 @@ const getIDS = function(length) {
   const max = min + length;
   const ids = Array(length)
 
-  console.log("getIDS, min: " + min)
-  console.log("getIDS, length: " + length)
-
   for(let i = 0, j = min; i < length; i++, j++) {
     ids[i] = j;
   }
@@ -23,11 +20,8 @@ const fetchData = async function(ids) {
   const P = new Pokedex.Pokedex();
   let deck = [];
 
-  console.log("fetchData, ids: " + ids);
   for (let i = 0, len = ids.length; i < len; i++) {
     try {
-      if (i === len - 1)
-        console.log("fetchData last: " + i)
       const pokemon = await P.getPokemonByName(ids[i]);
       const id = await pokemon.id;
       const name = await pokemon.name;
@@ -41,7 +35,6 @@ const fetchData = async function(ids) {
 }
 
 const loadDeck = async function (deckLen) {
-  console.log("loadDeck")
   const ids = getIDS(deckLen);
   const deck = await fetchData(ids);
 
@@ -49,39 +42,13 @@ const loadDeck = async function (deckLen) {
 }
 
 function Card(props) {
-  const [name, setName] = useState(props.name);
-  const [src, setSrc] = useState(props.image);
-  const [key, setKey] = useState(null);
-  // const [index, setIndex] = useState(null);
-
-  // let temp = index + props.index;
-
-  console.log(key);
-
-  // useEffect(() => {
-  //   setName(props.name)
-  //   setSrc(props.image)
-  // }, [props])
-
-  // useEffect(() => {
-  //   setIndex(props.index)
-  // }, [props.index])
-
-  // console.log(name, "with index: ", index)
-
-  const showRender = () => {
-    console.log("Card useEffect, name/image: ", props.name, "/", props.image);
-    return true
-  }
-
-  // function () {
-  //   props.onclick(name);
-  // }
+  const [name] = useState(props.name);
+  const [src] = useState(props.image);
+  const [key] = useState(null);
 
   return (
     <React.Fragment>
       {(
-        // showRender() &&
         <React.Fragment>
           <article className="Deck__card" onClick= { () => props.onClick(name) }>
             <div className="Deck__card__name">{ name }</div>
@@ -142,23 +109,18 @@ function Deck(props) {
   const [deck, setDeck] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [serverError, setServerError] = useState(null);
-  console.log("cards, loading: ", isLoading)
 
   useEffect(() => {
     async function fetchData() {
     try {
-      console.log("fetchData");
       const data = await loadDeck(deckLen);
       if (data && data.message)
         throw new Error(data)
       data.map((elem) => { return {...elem, key: generateKey()} })
       setDeck(data);
       setIsLoading(false);
-      console.log();
-      console.log("after fetchData");
     }
     catch (err) {
-      console.log(err)
       setServerError(err)
       setIsLoading(false);
     }
@@ -167,48 +129,38 @@ function Deck(props) {
   }, [])
 
   const handleClick = (name) => {
-    console.log("passing args for event: ", name);
     props.onClick(name);
     let shuffledDeck = ShuffleArray(deck);
     shuffledDeck = shuffledDeck.map((elem) => {
       elem.key = generateKey(elem.key);
-      return elem })
+      return elem
+    })
     setDeck(shuffledDeck);
-    console.log("Shuffled, deck: ", deck)
   }
 
   let showCards =  function() {
     let ret = [];
-    console.log("Showcard 1")
     deck.forEach( (card) => {
       ret.push(<Card key={ card.key } name={ card.name } image={ card.image } onClick= { handleClick } />)
     })
-    console.log("showCards: ", ret)
     return ret
   }
 
   const checkReRender = () => {
-    console.log("Render, deck: ", deck);
     return true
-  }
-
-  const showState = () => {
-    console.log("isLoading: ", isLoading, "/serverError: ", serverError, "/Deck: ", deck)
   }
 
   return (
   <React.Fragment>
-    {
-    (
-    showState() &&
-    isLoading &&
+    {(
+      isLoading &&
       <React.Fragment>
       { showLoading(deckLen) }
-    </React.Fragment>
+      </React.Fragment>
     ) || (
       serverError && showError(serverError)
     ) || (
-      checkReRender() && deck &&
+      deck &&
       <React.Fragment>
         { showCards() }
       </React.Fragment>
@@ -232,7 +184,6 @@ function Game(props) {
   }
 
   const gameReset = () => {
-    console.log("<Game> gameReset");
     setTurn(1);
     setMax(4);
     setScore(0);
@@ -241,23 +192,17 @@ function Game(props) {
   }
 
   const gameNextTurn = () => {
-    console.log("<Game> gameNextTurn");
     setTurn(turn + 1);
     setMax(max + 2);
     setScore(0);
     setClickedCards([])
-    console.log("<Game> gameNextTurn, clickedCards: ", clickedCards)
     setKey(generateKey());
   }
 
   const handleClick = (name) => {
-    console.log(clickedCards)
-
     if (!clickedCards.includes(name)) {
       let tempAry = clickedCards.slice();
       tempAry.push(name);
-
-      console.log("<Game>tempAry: ", tempAry);
 
       setScore(tempAry.length);
       handleBestScore(tempAry.length);
@@ -274,7 +219,7 @@ function Game(props) {
 
   return (
     <React.Fragment>
-      <Header bestScore= { bestScore } score= {score }></Header>
+      <StyledHeader bestScore= { bestScore } score= {score }></StyledHeader>
       <section className="Deck">
         <Deck key={ key } onClick={ handleClick } deckLen={ max }/>
       </section>
@@ -283,7 +228,7 @@ function Game(props) {
   )
 }
 
-function Header(props) {
+function StyledHeader(props) {
   const { score, bestScore } = props;
   return(
     <header className="GameHeader">
@@ -302,9 +247,6 @@ function Header(props) {
 function App() {
   return (
     <section>
-      <header>
-
-      </header>
       <section className="Board">
         <Game />
       </section>

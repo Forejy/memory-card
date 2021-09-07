@@ -1,0 +1,41 @@
+// MARK : BOARD
+
+.Deck {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 5vw auto;
+  width: 80vw;
+}
+
+.Deck__card {
+  $ml : 20px;
+  $mt : 10px;
+  border: 3px solid #666;
+  margin-left: $ml;
+  margin-top: $mt;
+
+  box-sizing: border-box;
+  width: calc(25% - (#{$ml} * .75));
+}
+
+.Deck__card:nth-child(4n + 1) {
+  margin-left: 0;
+}
+
+.Deck__loading {
+  width: 25%;
+  text-align: center;
+}
+
+.Deck__card__name {
+  text-align: center;
+}
+
+.Deck__card__name:first-letter {
+  text-transform: capitalize;
+}
+
+.Deck__card__img {
+  width: 100%;
+}

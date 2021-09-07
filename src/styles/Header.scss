@@ -1,0 +1,23 @@
+// MARK: GAMEHEADER
+
+.GameHeader {
+  position: relative;
+
+  border: 5px solid transparent;
+  border-image: linear-gradient(0.25turn, #b927fc7e 0%, #2c91fc6e 25%, #bafd336b 50%, #fec93769 75%, #fd18925b 100%);
+  border-image-slice: 0% 0% 100%;
+}
+
+.Subheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 0 auto;
+  width: 80vw;
+  height: 12vh;
+
+  color: #333;
+  font-weight: 700;
+  font-size: 1.75rem;
+}

@@ -23,10 +23,11 @@ const fetchData = async function(ids) {
   const P = new Pokedex.Pokedex();
   let deck = [];
 
-  console.log("createDeck, ids: " + ids);
+  console.log("fetchData, ids: " + ids);
   for (let i = 0, len = ids.length; i < len; i++) {
     try {
-      console.log("createDeck: " + i)
+      if (i === len - 1)
+        console.log("fetchData last: " + i)
       const pokemon = await P.getPokemonByName(ids[i]);
       const id = await pokemon.id;
       const name = await pokemon.name;
@@ -245,6 +246,7 @@ function Game(props) {
     setMax(max + 2);
     setScore(0);
     setClickedCards([])
+    console.log("<Game> gameNextTurn, clickedCards: ", clickedCards)
     setKey(generateKey());
   }
 
@@ -262,7 +264,9 @@ function Game(props) {
       if (tempAry.length === max) {
         gameNextTurn();
       }
-      setClickedCards(tempAry);
+      else {
+        setClickedCards(tempAry);
+      }
     } else {
       gameReset()
     }
